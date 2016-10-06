@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.globomart.prodpricing.dao.ProductCatalogueDao;
 import io.globomart.prodpricing.dao.ProductPricingDao;
 import io.globomart.prodpricing.dto.Pricing;
 import io.globomart.prodpricing.entities.PricingEntity;
@@ -35,7 +36,7 @@ import io.swagger.annotations.ApiOperation;
 @Path("prodprice")
 @Api(value = "/prodprice")
 public class ProductPricing {
-	
+
 	private static Logger LOGGER = LoggerFactory.getLogger(ProductPricing.class);
 
 	@GET
@@ -43,33 +44,27 @@ public class ProductPricing {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Return all Pricing", response = List.class)
 	public Response getProducts(@Context UriInfo uriInfo) throws SQLException {
-		
-		MultivaluedMap<String, String> queryParams  = uriInfo.getQueryParameters();
-		LOGGER.debug("the query params are{}",queryParams);
-		
+
+		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+		LOGGER.debug("the query params are{}", queryParams);
+
 		Map<String, String> filter = null;
-		if(queryParams!=null)
-		{
+		if (queryParams != null) {
 			filter = createFilterFromQueryParams(queryParams);
 		}
-		
-		
+
 		List<PricingEntity> productList = ProductPricingDao.getPricing(filter);
-		return Response.ok().entity(productList)
-				.header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-				.allow("OPTIONS")
-				.build();
+		return Response.ok().entity(productList).header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 
 	private Map<String, String> createFilterFromQueryParams(MultivaluedMap<String, String> queryParams) {
-		Map<String, String> filter =  new HashMap<>();
-		for(Entry<String,List<String>> queryParam :queryParams.entrySet())
-		{
-			//TODO require NULL checks
+		Map<String, String> filter = new HashMap<>();
+		for (Entry<String, List<String>> queryParam : queryParams.entrySet()) {
+			// TODO require NULL checks
 			filter.put(queryParam.getKey(), queryParam.getValue().get(0));
 		}
-		
+
 		return filter;
 	}
 
@@ -80,15 +75,12 @@ public class ProductPricing {
 	public Response getProducts(@PathParam(value = "id") int prodId) {
 		PricingEntity product = ProductPricingDao.getPricingById(prodId);
 		Response res = null;
-		if(product!=null)
-		{
-			LOGGER.debug("Successfully fetched Product for id ={}",prodId);
-			res =  Response.ok().entity(product).build();
-		}
-		else
-		{
-			LOGGER.warn("Could not find Product for id ={}",prodId);
-			res =  Response.status(Status.NOT_FOUND).build();
+		if (product != null) {
+			LOGGER.debug("Successfully fetched Product for id ={}", prodId);
+			res = Response.ok().entity(product).build();
+		} else {
+			LOGGER.warn("Could not find Product for id ={}", prodId);
+			res = Response.status(Status.NOT_FOUND).build();
 		}
 		return res;
 	}
@@ -99,12 +91,20 @@ public class ProductPricing {
 	// @ApiOperation(value = "Return a single product with specific id",
 	// response = Product.class)
 	public Response createProduct(Pricing pricing) throws JsonParseException, JsonMappingException, IOException {
-		PricingEntity productEn =ProductPricingDao.createPricing(pricing);
-		return Response.ok().entity(productEn)
-				.header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-				.allow("OPTIONS")
-				.build();
+
+		Response res = null;
+		boolean isvalidProduct = ProductCatalogueDao.validateProductId(pricing.getProductId());
+		if (isvalidProduct) {
+			//try {
+				PricingEntity pricingEn = ProductPricingDao.createPricing(pricing);
+				res = Response.ok().entity(pricingEn).build();
+//			} catch (Exception e) {
+//				res = Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode()).build();
+//			}
+		} else {
+			res = Response.status(Status.BAD_REQUEST.getStatusCode()).entity("INVALID PRODUCT ID").build();
+		}
+		return res;
 
 	}
 
