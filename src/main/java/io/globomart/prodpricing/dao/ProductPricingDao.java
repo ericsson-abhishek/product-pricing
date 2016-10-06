@@ -21,11 +21,11 @@ public abstract class ProductPricingDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductPricingDao.class);
 
 	public static PricingEntity createPricing(Pricing pricing) {
-		EntityManager theManager = PersistanceUtil.createEntityManager();
-		theManager.getTransaction().begin();
+		EntityManager entityManager = PersistanceUtil.createEntityManager();
+		entityManager.getTransaction().begin();
 		PricingEntity pricingEntity = new PricingEntity(pricing.getProductId(), pricing.getSupplierId(),pricing.getPrice());
-		theManager.persist(pricingEntity);
-		theManager.getTransaction().commit();
+		entityManager.persist(pricingEntity);
+		entityManager.getTransaction().commit();
 		LOGGER.info("Pricing created successfully for " + pricingEntity);
 		return pricingEntity;
 	}
@@ -38,7 +38,10 @@ public abstract class ProductPricingDao {
 
 	public static PricingEntity getPricingById(int pricingId) {
 		EntityManager entityManager = PersistanceUtil.createEntityManager();
-		return entityManager.find(PricingEntity.class, pricingId);
+		PricingEntity res = entityManager.find(PricingEntity.class, pricingId);
+		
+		
+		return res;
 	}
 
 	private static CriteriaQuery<PricingEntity> queryBuilder(EntityManager entityManager,
@@ -54,6 +57,7 @@ public abstract class ProductPricingDao {
 		}
 		CriteriaQuery<PricingEntity> query = criteriaQuery.select(pricings)
 				.where(predicates.toArray(new Predicate[] {}));
+		
 		return query;
 
 	}

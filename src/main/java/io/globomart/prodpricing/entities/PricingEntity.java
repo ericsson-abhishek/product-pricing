@@ -58,21 +58,4 @@ public class PricingEntity {
 		this.price = price;
 	}
 
-	
-
-//	@Override
-//	public String toString() {
-//		StringBuilder builder = new StringBuilder();
-//		builder.append("ProductEntity [productId=");
-//		builder.append(productId);
-//		builder.append(", supplierId=");
-//		builder.append(supplierId);
-//		builder.append(", model=");
-//		builder.append(model);
-//		builder.append(", color=");
-//		builder.append(color);
-//		builder.append("]");
-//		return builder.toString();
-//	}
-
 }

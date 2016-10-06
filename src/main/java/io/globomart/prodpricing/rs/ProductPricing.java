@@ -43,7 +43,7 @@ public class ProductPricing {
 	@Path("prices")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Return all Pricing", response = List.class)
-	public Response getProducts(@Context UriInfo uriInfo) throws SQLException {
+	public Response getPricing(@Context UriInfo uriInfo) throws SQLException {
 
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 		LOGGER.debug("the query params are{}", queryParams);
@@ -72,14 +72,14 @@ public class ProductPricing {
 	@Path("prices/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Return a single product with specific id", response = Pricing.class)
-	public Response getProducts(@PathParam(value = "id") int prodId) {
-		PricingEntity product = ProductPricingDao.getPricingById(prodId);
+	public Response getPricingById(@PathParam(value = "id") int pricingId) {
+		PricingEntity pricing = ProductPricingDao.getPricingById(pricingId);
 		Response res = null;
-		if (product != null) {
-			LOGGER.debug("Successfully fetched Product for id ={}", prodId);
-			res = Response.ok().entity(product).build();
+		if (pricing != null) {
+			LOGGER.debug("Successfully fetched Pricing for id ={}", pricingId);
+			res = Response.ok().entity(pricing).build();
 		} else {
-			LOGGER.warn("Could not find Product for id ={}", prodId);
+			LOGGER.warn("Could not find Pricing for id ={}", pricingId);
 			res = Response.status(Status.NOT_FOUND).build();
 		}
 		return res;
@@ -90,17 +90,13 @@ public class ProductPricing {
 	@Consumes(MediaType.APPLICATION_JSON)
 	// @ApiOperation(value = "Return a single product with specific id",
 	// response = Product.class)
-	public Response createProduct(Pricing pricing) throws JsonParseException, JsonMappingException, IOException {
+	public Response createPricing(Pricing pricing) throws JsonParseException, JsonMappingException, IOException {
 
 		Response res = null;
 		boolean isvalidProduct = ProductCatalogueDao.validateProductId(pricing.getProductId());
 		if (isvalidProduct) {
-			//try {
 				PricingEntity pricingEn = ProductPricingDao.createPricing(pricing);
 				res = Response.ok().entity(pricingEn).build();
-//			} catch (Exception e) {
-//				res = Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode()).build();
-//			}
 		} else {
 			res = Response.status(Status.BAD_REQUEST.getStatusCode()).entity("INVALID PRODUCT ID").build();
 		}

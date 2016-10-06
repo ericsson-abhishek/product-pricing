@@ -6,7 +6,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import io.globomart.prodpricing.SwaggerBootstrap;
 import io.globomart.prodpricing.dao.PersistanceUtil;
 
 public class App {
@@ -53,6 +52,7 @@ public class App {
 		
 		// add PersistanceUtil as a servletContexttlistener
 		context.addEventListener(new PersistanceUtil());
+		
 
 		return server;
 	}
