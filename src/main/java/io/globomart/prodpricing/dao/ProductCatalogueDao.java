@@ -17,6 +17,7 @@ public abstract class ProductCatalogueDao {
 		boolean result = false;
 		Client client = ClientBuilder.newClient();
 		try {
+			//TODO the URL must be replaced with LB URL of Prodcat Service.
 			Response res = client.target("http://localhost:2222/prodcat/products/" + prodId)
 					.request(MediaType.APPLICATION_JSON).get();
 			if (res.getStatus() == Status.OK.getStatusCode()) {
@@ -29,10 +30,4 @@ public abstract class ProductCatalogueDao {
 
 		return result;
 	}
-
-//	public static void main(String[] args) {
-//		System.out.println(new ProductCatalogueDao().validateProductId(1));
-//		System.out.println(new ProductCatalogueDao().validateProductId(2));
-//	}
-
 }

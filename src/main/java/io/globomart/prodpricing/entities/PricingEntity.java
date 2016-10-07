@@ -12,15 +12,7 @@ public class PricingEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer pricingId;
-	public Integer getPricingId() {
-		return pricingId;
-	}
-
-	public void setPricingId(Integer pricingId) {
-		this.pricingId = pricingId;
-	}
-
+	private int pricingId;
 	private int productId;
 	private int supplierId;
 	private double price;
@@ -32,6 +24,14 @@ public class PricingEntity {
 		this.productId = productId;
 		this.setSupplierId(supplierId);
 		this.setPrice(price);
+	}
+
+	public int getPricingId() {
+		return pricingId;
+	}
+
+	public void setPricingId(int pricingId) {
+		this.pricingId = pricingId;
 	}
 
 	public Integer getProductId() {

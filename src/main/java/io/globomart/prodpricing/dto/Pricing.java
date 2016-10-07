@@ -38,4 +38,12 @@ public class Pricing {
 	public void setPrice(double price) {
 		this.price = price;
 	}
+
+	public Integer getPricingId() {
+		return pricingId;
+	}
+
+	public void setPricingId(Integer pricingId) {
+		this.pricingId = pricingId;
+	}
 }

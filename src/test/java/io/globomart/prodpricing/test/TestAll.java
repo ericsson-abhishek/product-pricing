@@ -157,7 +157,7 @@ public class TestAll {
 		//System.out.println("Get Status testGetPriceById: " + response.getStatus());
 
 		PricingEntity resEntity1 = response.getEntity(PricingEntity.class);
-		assertEquals(resEntity1.getPricingId().intValue(), id);
+		assertEquals(resEntity1.getPricingId(), id);
 		assertNotNull(resEntity1.getProductId());
 		assertNotNull(resEntity1.getSupplierId());
 		assertNotNull(resEntity1.getPrice());

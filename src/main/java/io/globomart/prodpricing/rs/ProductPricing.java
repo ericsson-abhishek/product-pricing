@@ -31,7 +31,10 @@ import io.globomart.prodpricing.dao.ProductPricingDao;
 import io.globomart.prodpricing.dto.Pricing;
 import io.globomart.prodpricing.entities.PricingEntity;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Path("prodprice")
 @Api(value = "/prodprice")
@@ -42,7 +45,12 @@ public class ProductPricing {
 	@GET
 	@Path("prices")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Return all Pricing", response = List.class)
+	@ApiOperation(value = "Return all Prices those match the specified all filter criterii (if provided)", response = Pricing.class, responseContainer = "Array")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "pricingId", value = "Id of the pricing", required = false, dataType = "integer", paramType = "query"),
+			@ApiImplicitParam(name = "productId", value = "product id", required = false, dataType = "integer", paramType = "query"),
+			@ApiImplicitParam(name = "supplierId", value = "supplier id", required = false, dataType = "integer", paramType = "query"),
+			@ApiImplicitParam(name = "price", value = "product price", required = false, dataType = "double", paramType = "query") })
 	public Response getPricing(@Context UriInfo uriInfo) throws SQLException {
 
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
@@ -71,8 +79,9 @@ public class ProductPricing {
 	@GET
 	@Path("prices/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Return a single product with specific id", response = Pricing.class)
-	public Response getPricingById(@PathParam(value = "id") int pricingId) {
+	@ApiOperation(value = "Return a single price with specific id", response = Pricing.class)
+	public Response getPricingById(
+			@ApiParam(value = "ID of the pricing to be searched", required = true) @PathParam(value = "id") int pricingId) {
 		PricingEntity pricing = ProductPricingDao.getPricingById(pricingId);
 		Response res = null;
 		if (pricing != null) {
@@ -88,15 +97,16 @@ public class ProductPricing {
 	@POST
 	@Path("prices")
 	@Consumes(MediaType.APPLICATION_JSON)
-	// @ApiOperation(value = "Return a single product with specific id",
-	// response = Product.class)
-	public Response createPricing(Pricing pricing) throws JsonParseException, JsonMappingException, IOException {
+	@ApiOperation(value = "Add a new Price for a specific product and supplier", response = Pricing.class)
+	public Response createPricing(
+			@ApiParam(value = "The JSON request for new Price to be added", required = true) Pricing pricing)
+			throws JsonParseException, JsonMappingException, IOException {
 
 		Response res = null;
 		boolean isvalidProduct = ProductCatalogueDao.validateProductId(pricing.getProductId());
 		if (isvalidProduct) {
-				PricingEntity pricingEn = ProductPricingDao.createPricing(pricing);
-				res = Response.ok().entity(pricingEn).build();
+			PricingEntity pricingEn = ProductPricingDao.createPricing(pricing);
+			res = Response.ok().entity(pricingEn).build();
 		} else {
 			res = Response.status(Status.BAD_REQUEST.getStatusCode()).entity("INVALID PRODUCT ID").build();
 		}
