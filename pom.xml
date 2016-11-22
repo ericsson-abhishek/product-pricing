@@ -67,6 +67,26 @@
 			<version>2.6.3</version>
 		</dependency>
 
+		<!-- Dependency for Eureka -->
+		<dependency>
+			<groupId>com.netflix.eureka</groupId>
+			<artifactId>eureka-client</artifactId>
+			<version>1.5.6</version>
+		</dependency>
+
+		<!-- Dependency for ribbon-eureka -->
+		<dependency>
+			<groupId>com.netflix.ribbon</groupId>
+			<artifactId>ribbon-eureka</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.netflix.ribbon</groupId>
+			<artifactId>ribbon-httpclient</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
 			<artifactId>jersey-test-framework-provider-jetty</artifactId>
@@ -82,8 +102,9 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>1.19</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.powermock</groupId>

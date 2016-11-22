@@ -25,7 +25,12 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
+import com.netflix.discovery.shared.Application;
+import com.netflix.discovery.shared.Applications;
 
+import io.globomart.prodpricing.App;
 import io.globomart.prodpricing.dao.ProductCatalogueDao;
 import io.globomart.prodpricing.dao.ProductPricingDao;
 import io.globomart.prodpricing.dto.Pricing;
@@ -102,6 +107,14 @@ public class ProductPricing {
 			@ApiParam(value = "The JSON request for new Price to be added", required = true) Pricing pricing)
 			throws JsonParseException, JsonMappingException, IOException {
 
+		EurekaClient eClient = App.eurekaClient;
+		Applications apps = eClient.getApplications();
+		List<InstanceInfo> infos = apps.getInstancesByVirtualHostName("abhishek.com");
+		for (InstanceInfo info : infos)
+		{
+			System.out.println("Appname for the instance is "+info.getAppName()+" id corresponding to that is "+info.getId()+" IP "+info.getIPAddr()+" port "+info.getPort()  );
+		}
+		
 		Response res = null;
 		boolean isvalidProduct = ProductCatalogueDao.validateProductId(pricing.getProductId());
 		if (isvalidProduct) {
